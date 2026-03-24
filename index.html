@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>ELEN PACK – Ηγουμενίτσα</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333;}
+header, footer { background:#c0392b; color:white; padding:20px; text-align:center;}
+header h1, footer h2 { margin:0;}
+main { max-width:1200px; margin:30px auto; padding:0 20px;}
+.categories { display:flex; justify-content:center; gap:20px; margin-bottom:30px; flex-wrap:wrap;}
+.category { background:white; padding:15px 25px; border-radius:8px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:transform 0.2s;}
+.category:hover { transform:scale(1.05); background:#e74c3c; color:white;}
+.products { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px;}
+.product { background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; display:none; padding:15px;}
+.product h3 { margin:10px 0; font-size:16px;}
+.product p { font-size:14px; color:#555;}
+footer a { color:#f1c40f; text-decoration:none;}
+footer a:hover { text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>ELEN PACK</h1>
+<p>Ηγουμενίτσα – Είδη Συσκευασίας & Καθαρισμού</p>
+</header>
+
+<main>
+<h2 style="text-align:center;">Κατηγορίες Προϊόντων</h2>
+<div class="categories">
+    <div class="category" onclick="showProducts('cleaning')">Απορρυπαντικά</div>
+    <div class="category" onclick="showProducts('paper')">Χαρτικά</div>
+    <div class="category" onclick="showProducts('packaging')">Συσκευασία</div>
+    <div class="category" onclick="showProducts('equipment')">Εξοπλισμός Καθαρισμού</div>
+    <div class="category" onclick="showProducts('home')">Είδη Οικιακής Χρήσης</div>
+    <div class="category" onclick="showProducts('charcoal')">Κάρβουνα</div>
+</div>
+
+<div class="products">
+<!-- Απορρυπαντικά -->
+<div class="product" data-category="cleaning">
+<h3>Spark Υγρά Καθαρισμού</h3>
+<p>Διάφορα προϊόντα Spark για καθημερινό καθάρισμα.</p>
+</div>
+<div class="product" data-category="cleaning">
+<h3>Endless Σκόνες & Υγρά</h3>
+<p>Υψηλής ποιότητας απορρυπαντικά Endless.</p>
+</div>
+<div class="product" data-category="cleaning">
+<h3>Maki Καθαριστικά</h3>
+<p>Υγρά και σπρέυ Maki για διάφορες χρήσεις.</p>
+</div>
+<div class="product" data-category="cleaning">
+<h3>Σκόνες Skip</h3>
+<p>Σκόνες πλυντηρίου Skip για όλα τα ρούχα.</p>
+</div>
+
+<!-- Χαρτικά -->
+<div class="product" data-category="paper">
+<h3>Endless Χαρτικά</h3>
+<p>Χαρτί κουζίνας, υγείας και άλλα είδη Endless.</p>
+</div>
+<div class="product" data-category="paper">
+<h3>Velvet Χαρτικά</h3>
+<p>Υψηλής ποιότητας χαρτικά Velvet για το σπίτι.</p>
+</div>
+<div class="product" data-category="paper">
+<h3>Χειροπετσέτες</h3>
+<p>Διάφορες χειροπετσέτες για οικιακή χρήση.</p>
+</div>
+
+<!-- Συσκευασία -->
+<div class="product" data-category="packaging">
+<h3>Συσκευασία</h3>
+<p>Σακούλες, χαρτοκιβώτια, σελοτέιπ και σπάγκος για κάθε ανάγκη.</p>
+</div>
+
+<!-- Εξοπλισμός Καθαρισμού -->
+<div class="product" data-category="equipment">
+<h3>Εξοπλισμός Καθαρισμού</h3>
+<p>Επαγγελματικά εργαλεία και εξοπλισμός για καταστήματα και σπίτια.</p>
+</div>
+
+<!-- Είδη Οικιακής Χρήσης -->
+<div class="product" data-category="home"><h3>Σακούλες Απορριμμάτων</h3></div>
+<div class="product" data-category="home"><h3>Απλές Σακούλες</h3></div>
+<div class="product" data-category="home"><h3>Γάντια Κήπου</h3></div>
+<div class="product" data-category="home"><h3>Σκουπές</h3></div>
+<div class="product" data-category="home"><h3>Σφουγγαρίστρες με Κοντάρι</h3></div>
+<div class="product" data-category="home"><h3>Κοντάρια</h3></div>
+<div class="product" data-category="home"><h3>Κουβάδες</h3></div>
+<div class="product" data-category="home"><h3>Γλάστρες</h3></div>
+<div class="product" data-category="home"><h3>Λάστιχα</h3></div>
+<div class="product" data-category="home"><h3>Αρώματα Χώρου</h3></div>
+<div class="product" data-category="home"><h3>Υγρά Αφαίρεσης Λίπους</h3></div>
+<div class="product" data-category="home"><h3>Υγρά Κουζίνας</h3></div>
+
+<!-- Κάρβουνα -->
+<div class="product" data-category="charcoal"><h3>Κάρβουνο 5kg</h3></div>
+<div class="product" data-category="charcoal"><h3>Κάρβουνο 10kg</h3></div>
+<div class="product" data-category="charcoal"><h3>Κάρβουνο 15kg</h3></div>
+<div class="product" data-category="charcoal"><h3>Μπρικέτα 12kg</h3></div>
+
+</div>
+</main>
+
+<footer>
+<div class="container">
+<h2>ELEN PACK – Στοιχεία Επικοινωνίας</h2>
+<p><strong>Τοποθεσία:</strong> 1ο χλμ Ηγουμενίτσας–Ιωαννίνων, Ηγουμενίτσα, Θεσπρωτία</p>
+<p><strong>Τηλέφωνο:</strong> <a href="tel:+302665024333">+30 26650 24333</a> / <a href="tel:+306973065422">+30 69730 65422</a></p>
+<p><strong>Χάρτης:</strong> <a href="https://www.google.com/maps/search/?api=1&query=ELEN+PACK+Ηγουμενίτσα" target="_blank">Δες το στο Google Maps</a></p>
+</div>
+</footer>
+
+<script>
+function showProducts(category){
+    const products = document.querySelectorAll('.product');
+    products.forEach(p=>{
+        if(p.getAttribute('data-category')===category){ p.style.display='block'; }
+        else{ p.style.display='none'; }
+    });
+}
+</script>
+
+</body>
+</html>
