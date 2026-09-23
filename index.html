@@ -123,6 +123,106 @@ function showProducts(category){
     });
 }
 </script>
+from pathlib import Path
+import zipfile, textwrap
 
+root = Path("/mnt/data/elen-pack-full")
+root.mkdir(exist_ok=True)
+
+index = r'''<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ELEN PACK — Είδη συσκευασίας, καθαρισμού και οικιακής χρήσης στην Ηγουμενίτσα.">
+<title>ELEN PACK | Ηγουμενίτσα</title>
+<style>
+:root{--red:#d92f27;--dark:#111317;--ink:#20242a;--muted:#68717d;--bg:#f5f6f8;--card:#fff;--line:#e7e9ed}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:radial-gradient(circle at 80% 10%,#ff665d 0,#d92f27 35%,#9d1e19 100%);color:#fff;padding:22px 6% 80px}
+nav{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between}.logo{font-weight:900;font-size:25px;letter-spacing:2px}nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:700}
+.hero{max-width:1200px;margin:65px auto 0}.hero h1{font-size:clamp(42px,7vw,78px);line-height:.95;margin:0 0 20px;max-width:800px}.hero p{font-size:19px;max-width:650px;opacity:.92;line-height:1.6}.cta{display:inline-block;background:#fff;color:#a51f1a;text-decoration:none;font-weight:900;padding:14px 20px;border-radius:12px;margin-top:12px}
+main{max-width:1200px;margin:auto;padding:55px 20px}.section-title{font-size:32px;margin:0 0 10px}.lead{color:var(--muted);margin-top:0}.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:25px 0}.category{border:1px solid var(--line);background:#fff;padding:17px;border-radius:15px;text-align:left;font-weight:900;cursor:pointer;box-shadow:0 5px 18px #00000008}.category:hover,.category.active{background:var(--red);color:#fff;border-color:var(--red)}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.product{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 25px #00000009}.tag{font-size:12px;color:var(--red);font-weight:900;text-transform:uppercase}.product h3{margin:8px 0}.product p{color:var(--muted);line-height:1.5}.contact{margin-top:55px;background:var(--dark);color:#fff;border-radius:24px;padding:35px}.contact a{color:#ff817a}.footer{text-align:center;color:#77808b;padding:35px 20px}
+.ai-launch{position:fixed;right:22px;bottom:22px;border:0;border-radius:999px;padding:16px 20px;background:var(--dark);color:#fff;font-weight:900;box-shadow:0 12px 35px #0005;cursor:pointer;z-index:20}.chat{display:none;position:fixed;right:22px;bottom:82px;width:min(390px,calc(100vw - 28px));height:560px;background:#fff;border-radius:22px;box-shadow:0 20px 60px #0004;overflow:hidden;z-index:19;border:1px solid var(--line)}.chat.open{display:flex;flex-direction:column}.chat-head{background:var(--dark);color:#fff;padding:17px}.chat-head b{font-size:18px}.chat-head small{display:block;color:#bfc5cc;margin-top:4px}.messages{flex:1;padding:14px;overflow:auto;background:#f7f8fa}.msg{max-width:86%;padding:11px 13px;border-radius:15px;margin:8px 0;white-space:pre-line;line-height:1.45;font-size:14px}.bot{background:#fff;border:1px solid var(--line)}.user{margin-left:auto;background:var(--red);color:#fff}.quick{display:flex;gap:7px;padding:9px;border-top:1px solid var(--line);overflow:auto}.quick button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer}.input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}.input input{min-width:0;flex:1;padding:12px;border:1px solid var(--line);border-radius:12px}.input button{border:0;background:var(--red);color:#fff;border-radius:12px;padding:0 16px;font-weight:900}
+@media(max-width:700px){nav a{display:none}.hero{margin-top:45px}header{padding-bottom:55px}.contact{border-radius:18px}}
+</style>
+</head>
+<body>
+<header>
+<nav><div class="logo">ELEN PACK</div><div><a href="#products">Προϊόντα</a><a href="#contact">Επικοινωνία</a></div></nav>
+<div class="hero"><h1>Ό,τι χρειάζεσαι για σπίτι και επαγγελματικό χώρο.</h1><p>Είδη συσκευασίας, καθαρισμού, χαρτικά και οικιακά είδη στην Ηγουμενίτσα.</p><a class="cta" href="#products">Δες προϊόντα ↓</a></div>
+</header>
+<main id="products">
+<h2 class="section-title">Κατηγορίες</h2><p class="lead">Επίλεξε κατηγορία για να δεις ενδεικτικά προϊόντα.</p>
+<div class="categories">
+<button class="category active" data-cat="cleaning">🧴 Απορρυπαντικά</button><button class="category" data-cat="paper">🧻 Χαρτικά</button><button class="category" data-cat="packaging">📦 Συσκευασία</button><button class="category" data-cat="equipment">🧹 Εξοπλισμός</button><button class="category" data-cat="home">🏠 Οικιακά</button><button class="category" data-cat="charcoal">🔥 Κάρβουνα</button>
+</div>
+<div class="products" id="productGrid"></div>
+<section class="contact" id="contact"><h2>ELEN PACK</h2><p>1ο χλμ Ηγουμενίτσας–Ιωαννίνων, Ηγουμενίτσα, Θεσπρωτία</p><p>☎ <a href="tel:+302665024333">+30 26650 24333</a> · <a href="tel:+306973065422">+30 69730 65422</a></p><p>📍 <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=ELEN+PACK+Ηγουμενίτσα">Google Maps</a></p></section>
+</main>
+<div class="chat" id="chat"><div class="chat-head"><b>🤖 Elen AI</b><small>Βοηθός ELEN PACK</small></div><div class="messages" id="messages"><div class="msg bot">Γεια σου! 👋 Είμαι ο Elen AI. Μπορώ να σε βοηθήσω να βρεις κατηγορία ή προϊόν και να σου δώσω στοιχεία επικοινωνίας.</div></div><div class="quick"><button data-q="Θέλω απορρυπαντικά">🧴 Απορρυπαντικά</button><button data-q="Θέλω συσκευασία">📦 Συσκευασία</button><button data-q="Πού βρίσκεστε;">📍 Τοποθεσία</button></div><div class="input"><input id="question" placeholder="Γράψε την ερώτησή σου..."><button id="send">➤</button></div></div><button class="ai-launch" id="aiLaunch">🤖 Elen AI</button>
+<div class="footer">© ELEN PACK · Ηγουμενίτσα</div>
+<script>
+const products={
+cleaning:[["Spark","Υγρά καθαρισμού και καθημερινή φροντίδα."],["Endless","Σκόνες και υγρά απορρυπαντικά."],["Maki","Καθαριστικά και σπρέι."],["Skip","Σκόνες πλυντηρίου."]],
+paper:[["Endless Χαρτικά","Χαρτί κουζίνας, υγείας και άλλα είδη."],["Velvet","Χαρτικά για το σπίτι."],["Χειροπετσέτες","Για οικιακή και επαγγελματική χρήση."]],
+packaging:[["Σακούλες","Είδη συσκευασίας για διαφορετικές ανάγκες."],["Χαρτοκιβώτια","Λύσεις συσκευασίας και μεταφοράς."],["Σελοτέιπ & σπάγκος","Βασικά υλικά συσκευασίας."]],
+equipment:[["Σκούπες","Εργαλεία καθαρισμού."],["Σφουγγαρίστρες","Σφουγγαρίστρες και κοντάρια."],["Κουβάδες","Είδη για οικιακή και επαγγελματική χρήση."]],
+home:[["Σακούλες απορριμμάτων","Για σπίτι και επαγγελματικό χώρο."],["Γάντια","Πρακτικά γάντια για διάφορες εργασίες."],["Αρώματα χώρου","Για ευχάριστο χώρο."],["Υγρά κουζίνας","Καθαριστικά κουζίνας."]],
+charcoal:[["Κάρβουνο 5kg","Συσκευασία 5kg."],["Κάρβουνο 10kg","Συσκευασία 10kg."],["Κάρβουνο 15kg","Συσκευασία 15kg."],["Μπρικέτα 12kg","Συσκευασία 12kg."]]};
+const names={cleaning:"Απορρυπαντικά",paper:"Χαρτικά",packaging:"Συσκευασία",equipment:"Εξοπλισμός",home:"Οικιακά",charcoal:"Κάρβουνα"};
+function render(cat){document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b.dataset.cat===cat));document.getElementById("productGrid").innerHTML=products[cat].map(p=>`<article class="product"><span class="tag">${names[cat]}</span><h3>${p[0]}</h3><p>${p[1]}</p></article>`).join("")}
+document.querySelectorAll(".category").forEach(b=>b.onclick=()=>render(b.dataset.cat));render("cleaning");
+const chat=document.getElementById("chat"),messages=document.getElementById("messages"),input=document.getElementById("question");
+document.getElementById("aiLaunch").onclick=()=>{chat.classList.toggle("open");if(chat.classList.contains("open"))input.focus()};
+function add(t,c){const d=document.createElement("div");d.className="msg "+c;d.textContent=t;messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+async function ask(q){add(q,"user");const lower=q.toLowerCase();let reply;
+if(/απορρυπαν|skip|spark|endless|maki|καθαρισ/.test(lower)){render("cleaning");reply="Για απορρυπαντικά/καθαριστικά, δες Spark, Endless, Maki και Skip. Έδειξα την κατηγορία Απορρυπαντικά."}
+else if(/χαρτ|velvet|χειροπετσ/.test(lower)){render("paper");reply="Στα χαρτικά θα βρεις Endless, Velvet και χειροπετσέτες."}
+else if(/συσκευασ|σακούλ|χαρτοκιβ|σελοτέιπ|σπάγκο/.test(lower)){render("packaging");reply="Για συσκευασία υπάρχουν σακούλες, χαρτοκιβώτια, σελοτέιπ και σπάγκος."}
+else if(/εξοπλισ|σκούπ|σφουγγαρ|κουβά/.test(lower)){render("equipment");reply="Στον εξοπλισμό θα βρεις σκούπες, σφουγγαρίστρες, κοντάρια και κουβάδες."}
+else if(/κάρβου|μπρικέτ/.test(lower)){render("charcoal");reply="Στα κάρβουνα υπάρχουν 5kg, 10kg, 15kg και μπρικέτα 12kg."}
+else if(/πού|που|διεύθυν|ηγεουμεν|μαγαζί|μαγαζι/.test(lower)){reply="Το ELEN PACK βρίσκεται στο 1ο χλμ Ηγουμενίτσας–Ιωαννίνων, Ηγουμενίτσα."}
+else if(/τηλέφων|τηλεφων|επικοινων/.test(lower)){reply="Μπορείς να καλέσεις στο +30 26650 24333 ή +30 69730 65422."}
+else if(/τιμή|τιμε|πόσο|κοστο/.test(lower)){reply="Οι τιμές δεν είναι καταχωρημένες σε αυτή την έκδοση. Για ακριβή τιμή και διαθεσιμότητα, επικοινώνησε με το κατάστημα."}
+else {reply="Μπορώ να σε βοηθήσω με απορρυπαντικά, χαρτικά, συσκευασία, εξοπλισμό, οικιακά, κάρβουνα, τοποθεσία και επικοινωνία."}
+add(reply,"bot")}
+function send(){const q=input.value.trim();if(!q)return;input.value="";ask(q)}
+document.getElementById("send").onclick=send;input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});document.querySelectorAll(".quick button").forEach(b=>b.onclick=()=>ask(b.dataset.q));
+</script>
+</body></html>'''
+
+(root/"index.html").write_text(index, encoding="utf-8")
+(root/"README.md").write_text("""# ELEN PACK — Full Website
+
+Includes:
+- responsive professional ELEN PACK landing page
+- product categories and cards
+- Elen AI chatbot UI
+- safe frontend architecture ready for a real AI backend
+- no API keys stored in frontend
+
+## Real AI backend
+For production, connect the chatbot to `/api/chat` through a serverless backend (Vercel/Netlify/Cloudflare Worker or your own server). Keep the AI provider API key only on the server.
+""", encoding="utf-8")
+(root/"api-chat-example.js").write_text("""// Example backend contract only.
+// DO NOT put your private AI API key in index.html or any public GitHub file.
+//
+// POST /api/chat
+// body: { messages: [{role:"user", content:"..."}] }
+//
+// The server should:
+// 1. validate the request
+// 2. call your chosen AI provider with the secret key stored in environment variables
+// 3. return { reply: "..." }
+//
+// This file intentionally contains no secret key.
+""", encoding="utf-8")
+
+zip_path="/mnt/data/elen-pack-full.zip"
+with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:
+    for p in root.rglob("*"):
+        z.write(p,p.relative_to(root.parent))
+print(zip_path)
 </body>
 </html>
